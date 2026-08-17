@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Airwallex Sentinel | AI-Powered Fraud Prevention</title>
+<style>
+  @font-face { font-family:"AxLLCircular"; src:url("https://grw-landing.airwallex.com/fonts/circular/CircularXXWeb-Regular.202601.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:swap; }
+  @font-face { font-family:"AxLLCircular"; src:url("https://grw-landing.airwallex.com/fonts/circular/CircularXXWeb-Medium.202601.woff2") format("woff2"); font-weight:500; font-style:normal; font-display:swap; }
+  @font-face { font-family:"AxLLCircular"; src:url("https://grw-landing.airwallex.com/fonts/circular/CircularXXWeb-Bold.202601.woff2") format("woff2"); font-weight:700; font-style:normal; font-display:swap; }
+  @font-face { font-family:"IBMPlexMono"; src:url("https://grw-landing.airwallex.com/fonts/ibm-plex-mono/IBMPlexMono-Regular.woff2") format("woff2"); font-weight:400; font-display:swap; }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"AxLLCircular",Helvetica,Arial,sans-serif; color:#1a1d21; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .wrap { width:100%; max-width:1120px; margin:0 auto; padding:0 16px; }
+
+  /* NAV */
+  nav { position:sticky; top:0; z-index:100; background:#fff; border-bottom:1px solid #e8eaed; }
+  .nav-inner { display:flex; align-items:center; justify-content:space-between; height:56px; }
+  .nav-logo { font-size:18px; font-weight:700; color:#1a1d21; text-decoration:none; display:flex; align-items:center; gap:6px; }
+  .nav-logo-mark { width:20px; height:20px; background:linear-gradient(135deg,#612FFF,#D200A3); border-radius:4px; }
+  .nav-links { display:flex; align-items:center; gap:24px; }
+  .nav-links a { font-size:14px; font-weight:400; color:#42474d; text-decoration:none; }
+  .nav-links a:hover { color:#1a1d21; }
+
+  /* BUTTONS */
+  .btn { display:inline-flex; align-items:center; justify-content:center; font-family:inherit; font-size:16px; font-weight:500; text-decoration:none; white-space:nowrap; border-radius:6px; height:40px; padding:8px 16px; cursor:pointer; transition:all 200ms; border:0; }
+  .btn-primary { background:#612fff; color:#fff; }
+  .btn-primary:hover { background:#7043FF; }
+  .btn-outline { background:#fff; color:#612fff; border:1px solid #d7dbe0; }
+  .btn-outline:hover { background:#F9F7FF; }
+  .btn-sm { font-size:12px; height:32px; padding:8px 12px; }
+  .btn-lg { font-size:16px; height:48px; padding:12px 24px; }
+  .btn-ghost-white { background:transparent; color:#fff; border:1px solid rgba(255,255,255,0.2); }
+  .btn-ghost-white:hover { background:rgba(255,255,255,0.08); }
+
+  /* SECTION LABEL */
+  .section-label { font-size:14px; font-weight:700; letter-spacing:0.4px; text-transform:uppercase; background-image:linear-gradient(135deg,#612FFF 13.72%,#D200A3 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:inline-block; margin-bottom:16px; }
+  .section-label-light { -webkit-text-fill-color:#9F81FF; color:#9F81FF; }
+  .section-title { font-size:28px; font-weight:700; line-height:1.25; letter-spacing:0.2px; color:#1a1d21; }
+  .section-body { font-size:16px; font-weight:400; line-height:1.5; color:#42474d; margin-top:16px; }
+  @media(min-width:900px){ .section-title { font-size:40px; line-height:normal; } }
+
+  /* ═══════ HERO ═══════ */
+  .hero { padding:80px 0 60px; background:#fff; }
+  .hero-inner { display:flex; flex-direction:column; gap:48px; }
+  .hero-text { max-width:560px; }
+  .hero h1 { font-size:40px; font-weight:700; line-height:1.1; letter-spacing:0.2px; }
+  .hero-desc { font-size:18px; font-weight:400; line-height:1.6; color:#42474d; margin-top:24px; }
+  .hero-cta { display:flex; gap:12px; margin-top:32px; flex-wrap:wrap; }
+  .hero-demo { flex:1; min-width:320px; }
+  @media(min-width:900px){ .hero { padding:120px 0 80px; } .hero-inner { flex-direction:row; gap:64px; align-items:center; } .hero h1 { font-size:48px; } }
+
+  /* MOCK UI PANELS */
+  .mock-panel { background:#1a1d21; border-radius:16px; overflow:hidden; box-shadow:0 24px 80px rgba(0,0,0,0.15); font-size:13px; color:#e8eaed; }
+  .mock-bar { display:flex; align-items:center; gap:6px; padding:12px 16px; background:#15171a; }
+  .mock-dot { width:8px; height:8px; border-radius:50%; }
+  .mock-dot-r { background:#ff5f57; } .mock-dot-y { background:#ffbd2e; } .mock-dot-g { background:#28c840; }
+  .mock-bar-title { font-size:11px; color:#868e98; margin-left:8px; font-family:"IBMPlexMono",monospace; }
+  .mock-body { padding:20px; }
+  .mock-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+  .mock-row:last-child { border:0; }
+  .mock-label { color:#868e98; font-size:12px; }
+  .mock-val { font-family:"IBMPlexMono",monospace; font-size:13px; }
+  .mock-badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; }
+  .badge-green { background:rgba(56,211,75,0.12); color:#38d34b; }
+  .badge-red { background:rgba(255,59,48,0.12); color:#ff3b30; }
+  .badge-yellow { background:rgba(255,189,46,0.12); color:#ffbd2e; }
+  .badge-purple { background:rgba(97,47,255,0.12); color:#9F81FF; }
+  .mock-score { display:flex; align-items:center; gap:8px; }
+  .score-bar { width:80px; height:6px; border-radius:3px; background:rgba(255,255,255,0.08); overflow:hidden; }
+  .score-fill { height:100%; border-radius:3px; }
+  .mock-heading { font-size:14px; font-weight:700; color:#fff; margin-bottom:12px; }
+  .mock-subtext { font-size:11px; color:#545b63; }
+
+  /* HERO STATS BAR */
+  .hero-stats-bar { display:flex; gap:1px; background:#e8eaed; border-radius:16px; overflow:hidden; margin-top:48px; }
+  .hero-stat { flex:1; background:#fff; padding:28px 24px; text-align:center; }
+  .hero-stat-num { font-size:36px; font-weight:700; background-image:linear-gradient(135deg,#612FFF 13.72%,#D200A3 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .hero-stat-label { font-size:13px; color:#68707a; margin-top:4px; line-height:1.4; }
+  @media(max-width:899px){ .hero-stats-bar { flex-direction:column; } }
+
+  /* ═══════ PROBLEM STATEMENT ═══════ */
+  .problem { padding:80px 0; background:#f6f7f8; border-top:1px solid #e8eaed; }
+  .problem-text { max-width:720px; }
+  .problem h2 { font-size:28px; font-weight:700; line-height:1.25; letter-spacing:0.2px; }
+  .problem p { font-size:18px; color:#42474d; margin-top:16px; line-height:1.6; }
+  @media(min-width:900px){ .problem { padding:120px 0; } .problem h2 { font-size:36px; } }
+
+  /* LIFECYCLE MATRIX (Stripe-style) */
+  .matrix { padding:0 0 80px; background:#f6f7f8; }
+  .matrix-grid { display:grid; grid-template-columns:1fr; gap:16px; }
+  .matrix-col-label { font-size:12px; font-weight:700; letter-spacing:0.4px; text-transform:uppercase; margin-bottom:12px; padding-bottom:8px; border-bottom:2px solid; }
+  .matrix-col { background:#fff; border-radius:16px; padding:28px; }
+  .matrix-item { display:flex; gap:12px; align-items:flex-start; padding:12px 0; }
+  .matrix-item:not(:last-child) { border-bottom:1px solid #e8eaed; }
+  .matrix-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:16px; }
+  .matrix-item h4 { font-size:14px; font-weight:700; color:#1a1d21; }
+  .matrix-item p { font-size:13px; color:#68707a; margin-top:2px; line-height:1.4; }
+  @media(min-width:900px){ .matrix { padding:0 0 120px; } .matrix-grid { grid-template-columns:repeat(3,1fr); } }
+
+  /* ═══════ HOW IT WORKS ═══════ */
+  .how-it-works { padding:80px 0; background:#1f2225; color:#fff; }
+  .how-it-works .section-title { color:#fff; }
+  .pipeline { display:flex; flex-direction:column; gap:0; margin-top:48px; position:relative; }
+  .pipe-step { display:flex; gap:24px; position:relative; padding-bottom:40px; }
+  .pipe-step:last-child { padding-bottom:0; }
+  .pipe-num { width:48px; height:48px; border-radius:50%; background:rgba(97,47,255,0.15); color:#9F81FF; font-size:18px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; position:relative; z-index:1; }
+  .pipe-line { position:absolute; left:39px; top:48px; width:2px; bottom:0; background:rgba(97,47,255,0.15); }
+  .pipe-step:last-child .pipe-line { display:none; }
+  .pipe-content h4 { font-size:18px; font-weight:500; color:#fff; margin-bottom:8px; }
+  .pipe-content p { font-size:14px; color:#868e98; line-height:1.6; }
+  .pipe-signals { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+  .pipe-signal { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:4px 10px; font-size:11px; color:#e8eaed; font-family:"IBMPlexMono",monospace; }
+  @media(min-width:900px){ .how-it-works { padding:120px 0; } .pipe-step { gap:32px; } }
+
+  /* ═══════ FEATURE SECTIONS ═══════ */
+  .feature-section { padding:80px 0; }
+  .feature-section-alt { background:#f6f7f8; border-top:1px solid #e8eaed; border-bottom:1px solid #e8eaed; }
+  .feature-block { display:flex; flex-direction:column; gap:40px; }
+  .feature-text { flex:1; }
+  .feature-visual { flex:0 0 47%; display:flex; align-items:center; justify-content:center; }
+  .feature-text h2 { font-size:28px; font-weight:700; line-height:1.25; letter-spacing:0.2px; }
+  .feature-text .desc { font-size:16px; color:#42474d; margin-top:16px; line-height:1.6; }
+  .feature-bullets { margin-top:24px; list-style:none; }
+  .feature-bullets li { padding:16px 0; border-top:1px solid #e8eaed; }
+  .feature-bullets li:last-child { border-bottom:1px solid #e8eaed; }
+  .feature-bullets li strong { font-size:16px; font-weight:500; color:#1a1d21; display:block; margin-bottom:4px; }
+  .feature-bullets li span { font-size:14px; color:#68707a; line-height:1.5; }
+  @media(min-width:900px){ .feature-section { padding:120px 0; } .feature-block { flex-direction:row; gap:64px; align-items:center; } .feature-block.reverse { flex-direction:row-reverse; } .feature-text h2 { font-size:36px; } }
+
+  /* ═══════ SIGNALS ═══════ */
+  .signals { padding:80px 0; background:#fff; }
+  .sig-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:48px; }
+  .sig-card { background:#f5f6f7; border-radius:12px; padding:24px; }
+  .sig-card h4 { font-size:14px; font-weight:700; color:#1a1d21; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+  .sig-card h4 .sig-dot { width:8px; height:8px; border-radius:50%; background:#612FFF; flex-shrink:0; }
+  .sig-card p { font-size:13px; color:#68707a; line-height:1.5; }
+  @media(min-width:900px){ .signals { padding:120px 0; } .sig-grid { grid-template-columns:repeat(3,1fr); } }
+  @media(max-width:599px){ .sig-grid { grid-template-columns:1fr; } }
+
+  /* ═══════ LIFECYCLE ═══════ */
+  .lifecycle { padding:80px 0; background:#1f2225; color:#fff; }
+  .lc-grid { display:grid; grid-template-columns:1fr; gap:24px; margin-top:48px; }
+  .lc-col-label { font-size:14px; font-weight:700; letter-spacing:0.4px; text-transform:uppercase; margin-bottom:16px; padding-bottom:12px; }
+  .lc-pre .lc-col-label { color:#9F81FF; border-bottom:2px solid #9F81FF; }
+  .lc-post .lc-col-label { color:#FF8E3C; border-bottom:2px solid #FF8E3C; }
+  .lc-disp .lc-col-label { color:#38d34b; border-bottom:2px solid #38d34b; }
+  .lc-item { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:20px; margin-bottom:8px; }
+  .lc-item h4 { font-size:14px; font-weight:700; color:#fff; margin-bottom:4px; }
+  .lc-item p { font-size:13px; color:#868e98; line-height:1.5; }
+  @media(min-width:900px){ .lifecycle { padding:120px 0; } .lc-grid { grid-template-columns:repeat(3,1fr); } }
+
+  /* ═══════ TESTIMONIALS ═══════ */
+  .testimonials { padding:80px 0; background:#f6f7f8; border-top:1px solid #e8eaed; }
+  .test-grid { display:grid; grid-template-columns:1fr; gap:24px; margin-top:48px; }
+  .test-card { background:#fff; border-radius:16px; padding:40px; display:flex; flex-direction:column; justify-content:space-between; }
+  .test-card blockquote { font-size:18px; font-weight:400; line-height:1.5; color:#1a1d21; margin-bottom:32px; }
+  .test-attr { display:flex; align-items:center; gap:12px; }
+  .test-avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#612FFF,#D200A3); display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px; font-weight:700; flex-shrink:0; }
+  .test-name { font-size:14px; font-weight:500; color:#1a1d21; }
+  .test-role { font-size:14px; color:#868e98; }
+  @media(min-width:900px){ .testimonials { padding:120px 0; } .test-grid { grid-template-columns:repeat(2,1fr); } }
+
+  /* ═══════ COMPARISON ═══════ */
+  .comparison { padding:80px 0; }
+  .comp-table { width:100%; border-collapse:separate; border-spacing:0; border-radius:12px; overflow:hidden; border:1px solid #e8eaed; margin-top:48px; }
+  .comp-table thead th { font-size:14px; font-weight:500; padding:16px 20px; text-align:left; background:#f5f6f7; border-bottom:1px solid #e8eaed; color:#68707a; }
+  .comp-table thead th:first-child { width:50%; }
+  .comp-table thead th.col-s { text-align:center; background:#612FFF; color:#fff; font-weight:700; }
+  .comp-table thead th.col-l { text-align:center; }
+  .comp-table tbody td { padding:14px 20px; font-size:14px; color:#42474d; border-bottom:1px solid #e8eaed; }
+  .comp-table tbody tr:last-child td { border-bottom:none; }
+  .comp-table tbody td:nth-child(2) { text-align:center; color:#612FFF; font-weight:500; }
+  .comp-table tbody td:last-child { text-align:center; color:#868e98; }
+  .comp-check { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:#F0EFFF; color:#612FFF; font-size:14px; font-weight:700; }
+  @media(min-width:900px){ .comparison { padding:120px 0; } }
+
+  /* ═══════ RESOURCES ═══════ */
+  .resources { padding:80px 0; background:#f6f7f8; border-top:1px solid #e8eaed; }
+  .res-grid { display:grid; grid-template-columns:1fr; gap:20px; margin-top:48px; }
+  .res-card { background:#fff; border-radius:16px; overflow:hidden; text-decoration:none; color:inherit; transition:box-shadow 200ms; }
+  .res-card:hover { box-shadow:0 4px 20px rgba(0,0,0,0.08); }
+  .res-thumb { height:160px; background:#f5f6f7; display:flex; align-items:center; justify-content:center; }
+  .res-body { padding:24px; }
+  .res-type { font-size:12px; font-weight:700; letter-spacing:0.4px; text-transform:uppercase; margin-bottom:8px; background-image:linear-gradient(135deg,#612FFF,#D200A3); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .res-body h3 { font-size:16px; font-weight:500; line-height:1.4; color:#1a1d21; }
+  @media(min-width:900px){ .resources { padding:120px 0; } .res-grid { grid-template-columns:repeat(3,1fr); } }
+
+  /* ═══════ FINAL CTA ═══════ */
+  .final-cta { padding:80px 0; background:#1f2225; text-align:center; color:#fff; }
+  .final-cta h2 { font-size:28px; font-weight:700; line-height:1.25; letter-spacing:0.2px; color:#fff; }
+  .final-cta .desc { font-size:16px; color:#868e98; margin-top:16px; }
+  .final-cta .cta-btns { display:flex; gap:12px; justify-content:center; margin-top:32px; flex-wrap:wrap; }
+  @media(min-width:900px){ .final-cta { padding:120px 0; } .final-cta h2 { font-size:40px; line-height:normal; } }
+
+  footer { background:#1a1d21; color:#545b63; padding:24px 0; font-size:13px; text-align:center; border-top:1px solid #2f3237; }
+  @media(max-width:899px){ .nav-links .nav-link-text { display:none; } }
+
+  /* ANIMATIONS */
+  @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
+  .pulse { animation:pulse 2s ease-in-out infinite; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-logo"><div class="nav-logo-mark"></div>Airwallex</a>
+    <div class="nav-links">
+      <a href="#" class="nav-link-text">Products</a>
+      <a href="#" class="nav-link-text">Solutions</a>
+      <a href="#" class="nav-link-text">Developers</a>
+      <a href="#" class="btn btn-primary btn-sm">Get started</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════ HERO ═══════ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="section-label">Airwallex Sentinel</div>
+        <h1>Stop fraud. Protect revenue. Scale with confidence.</h1>
+        <p class="hero-desc">AI-powered fraud detection and prevention integrated across the full payment lifecycle. From real-time transaction screening to automated dispute recovery, one system that gets smarter with every payment.</p>
+        <div class="hero-cta">
+          <a href="#" class="btn btn-primary btn-lg">Get started</a>
+          <a href="#" class="btn btn-outline btn-lg">Contact sales</a>
+        </div>
+      </div>
+      <div class="hero-demo">
+        <!-- Mock risk scoring panel -->
+        <div class="mock-panel">
+          <div class="mock-bar">
+            <div class="mock-dot mock-dot-r"></div><div class="mock-dot mock-dot-y"></div><div class="mock-dot mock-dot-g"></div>
+            <span class="mock-bar-title">sentinel / live transaction scoring</span>
+          </div>
+          <div class="mock-body">
+            <div class="mock-heading">Transaction Risk Assessment</div>
+            <div class="mock-row">
+              <span class="mock-label">Transaction</span>
+              <span class="mock-val">pay_7xK9m2...dF4a</span>
+            </div>
+            <div class="mock-row">
+              <span class="mock-label">Amount</span>
+              <span class="mock-val">$2,340.00 USD</span>
+            </div>
+            <div class="mock-row">
+              <span class="mock-label">Risk score</span>
+              <div class="mock-score">
+                <div class="score-bar"><div class="score-fill" style="width:12%; background:#38d34b;"></div></div>
+                <span class="mock-val" style="color:#38d34b;">12</span>
+              </div>
+            </div>
+            <div class="mock-row">
+              <span class="mock-label">Decision</span>
+              <span class="mock-badge badge-green">ALLOW</span>
+            </div>
+            <div class="mock-row">
+              <span class="mock-label">Signals</span>
+              <div style="display:flex; gap:4px; flex-wrap:wrap; justify-content:flex-end;">
+                <span class="mock-badge badge-green" style="font-size:10px;">Device match</span>
+                <span class="mock-badge badge-green" style="font-size:10px;">IP consistent</span>
+                <span class="mock-badge badge-purple" style="font-size:10px;">Returning buyer</span>
+              </div>
+            </div>
+            <div style="margin-top:16px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.06);">
+              <div class="mock-heading" style="font-size:12px; color:#868e98; font-weight:400;">Recent decisions</div>
+              <div style="display:flex; gap:4px; margin-top:8px;">
+                <span class="mock-badge badge-green" style="font-size:10px;">ALLOW</span>
+                <span class="mock-badge badge-green" style="font-size:10px;">ALLOW</span>
+                <span class="mock-badge badge-yellow" style="font-size:10px;">3DS</span>
+                <span class="mock-badge badge-green" style="font-size:10px;">ALLOW</span>
+                <span class="mock-badge badge-red" style="font-size:10px;">BLOCK</span>
+                <span class="mock-badge badge-green" style="font-size:10px;">ALLOW</span>
+                <span class="mock-badge badge-green" style="font-size:10px;">ALLOW</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="hero-stats-bar">
+      <div class="hero-stat">
+        <div class="hero-stat-num">5x</div>
+        <div class="hero-stat-label">More effective fraud detection vs unprotected transactions</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">96%</div>
+        <div class="hero-stat-label">Precision on real-time fraud attack detection</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">30%+</div>
+        <div class="hero-stat-label">Higher dispute win rate with AI automation</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">35+</div>
+        <div class="hero-stat-label">Markets with locally tuned risk models</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ PROBLEM STATEMENT ═══════ -->
+<section class="problem">
+  <div class="wrap">
+    <div class="problem-text">
+      <div class="section-label">The challenge</div>
+      <h2>Fraud isn't limited to checkout.</h2>
+      <p>Card testing at sign-up. Transaction fraud at payment. Bot abuse during flash sales. Friendly fraud after delivery. Disputes weeks later. Each stage has different attack patterns, and most fraud tools only cover one of them.</p>
+      <p style="margin-top:12px;">Sentinel treats the entire payment lifecycle as one connected problem.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ LIFECYCLE MATRIX ═══════ -->
+<section class="matrix">
+  <div class="wrap">
+    <div class="matrix-grid">
+      <!-- Sign-up / Pre-auth -->
+      <div class="matrix-col">
+        <div class="matrix-col-label" style="color:#9F81FF; border-color:#9F81FF;">Sign-up &amp; payment</div>
+        <div class="matrix-item">
+          <div class="matrix-icon" style="background:rgba(97,47,255,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="#612FFF" stroke-width="1.5"/><path d="M6 9h6M9 6v6" stroke="#612FFF" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div><h4>Card testing</h4><p>Automated validation of stolen cards through high-volume small transactions</p></div>
+        </div>
+        <div class="matrix-item">
+          <div class="matrix-icon" style="background:rgba(97,47,255,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2l-7 3.5v4.5c0 3.87 2.99 7.13 7 7.88 4.01-.75 7-4.01 7-7.88V5.5L9 2z" stroke="#612FFF" stroke-width="1.5" fill="none"/></svg></div>
+          <div><h4>Transaction fraud</h4><p>Stolen credentials used for unauthorized purchases at checkout</p></div>
+        </div>
+        <div class="matrix-item">
+          <div class="matrix-icon" style="background:rgba(97,47,255,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#612FFF" stroke-width="1.5" fill="none"/><circle cx="9" cy="7" r="2" stroke="#612FFF" stroke-width="1.5" fill="none"/><path d="M5 14c0-2.21 1.79-4 4-4s4 1.79 4 4" stroke="#612FFF" stroke-width="1.5" fill="none"/></svg></div>
+          <div><h4>Bot abuse</h4><p>Automated scripts exploiting promotions, inventory, and payment flows</p></div>
+        </div>
+      </div>
+
+      <!-- Post-purchase -->
+      <div class="matrix-col">
+        <div class="matrix-col-label" style="color:#FF8E3C; border-color:#FF8E3C;">Post-purchase</div>
+        <div class="matrix-item">
+          <div class="matrix-icon" style="background:rgba(255,142,60,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 6h14v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" stroke="#FF8E3C" stroke-width="1.5" fill="none"/><path d="M2 6l7 5 7-5" stroke="#FF8E3C" stroke-width="1.5" fill="none"/></svg></div>
+          <div><h4>Friendly fraud</h4><p>Legitimate purchases disputed as unauthorized after delivery</p></div>
+        </div>
+        <div class="matrix-item">
+          <div class="matrix-icon" style="background:rgba(255,142,60,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v14M2 9h14" stroke="#FF8E3C" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="9" r="7" stroke="#FF8E3C" stroke-width="1.5" fill="none"/></svg></div>
+          <div><h4>Account takeover</h4><p>Compromised credentials used to make purchases on existing accounts</p></div>
+        </div>
+        <div class="matrix-item">
+          <div class="matrix-icon" style="background:rgba(255,142,60,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 13l4-4 3 3 5-7" stroke="#FF8E3C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
+          <div><h4>Delayed capture fraud</h4><p>Authorization passes but fraud signals emerge before settlement</p></div>
+        </div>
+      </div>
+
+      <!-- Disputes -->
+      <div class="matrix-col">
+        <div class="matrix-col-label" style="color:#38d34b; border-color:#38d34b;">Disputes</div>
+        <div class="matrix-item">
+          <div class="matrix-icon" style="background:rgba(56,211,75,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 3h12v10a2 2 0 01-2 2H5a2 2 0 01-2-2V3z" stroke="#38d34b" stroke-width="1.5" fill="none"/><path d="M7 7h4M7 10h2" stroke="#38d34b" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div><h4>Chargebacks</h4><p>Scheme-mandated reversals requiring evidence and timely response</p></div>
+        </div>
+        <div class="matrix-item">
+          <div class="matrix-icon" style="background:rgba(56,211,75,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 9h4l2-5 2 10 2-5h4" stroke="#38d34b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
+          <div><h4>Scheme monitoring</h4><p>Visa VAMP and Mastercard thresholds that carry financial penalties</p></div>
+        </div>
+        <div class="matrix-item">
+          <div class="matrix-icon" style="background:rgba(56,211,75,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M14 4l-8 8M6 4l8 8" stroke="#38d34b" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div><h4>Revenue loss</h4><p>Disputed funds held or lost, compounded by scheme fees and penalties</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ HOW IT WORKS ═══════ -->
+<section class="how-it-works">
+  <div class="wrap">
+    <div class="section-label section-label-light">How it works</div>
+    <div class="section-title" style="color:#fff;">Multi-stage AI decisioning in milliseconds</div>
+    <p class="section-body" style="color:#868e98; max-width:640px;">Every transaction flows through a real-time pipeline that scores, decides, and optimizes without slowing checkout.</p>
+
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="pipe-num">1</div><div class="pipe-line"></div>
+        <div class="pipe-content">
+          <h4>Profile and model selection</h4>
+          <p>Each transaction is mapped to specialized risk profiles based on business type and payment context. Digital goods, travel bookings, subscriptions, and high-risk categories each get tuned models, not a one-size-fits-all score.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">2</div><div class="pipe-line"></div>
+        <div class="pipe-content">
+          <h4>Feature computation and risk scoring</h4>
+          <p>Thousands of features computed per transaction in real time. The engine sees what static rules can't.</p>
+          <div class="pipe-signals">
+            <span class="pipe-signal">device fingerprint</span>
+            <span class="pipe-signal">behavioral biometrics</span>
+            <span class="pipe-signal">velocity analysis</span>
+            <span class="pipe-signal">graph clustering</span>
+            <span class="pipe-signal">IP geolocation</span>
+            <span class="pipe-signal">impossible travel</span>
+            <span class="pipe-signal">emulator detection</span>
+            <span class="pipe-signal">issuer preferences</span>
+          </div>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">3</div><div class="pipe-line"></div>
+        <div class="pipe-content">
+          <h4>Layered rule evaluation</h4>
+          <p>Risk scores flow through four rule layers: adaptive fraud typology rules that evolve with new attack patterns, segment-specific rules tuned per vertical, scheme compliance rules to maintain Visa and Mastercard standing, and merchant-specific rules for targeted strategies.</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">4</div>
+        <div class="pipe-content">
+          <h4>End-to-end payment optimization</h4>
+          <p>Fraud decisions feed directly into Optimize 360 to orchestrate the complete payment journey. Smart 3DS authentication, intelligent acquiring path routing, and adaptive retry logic, all informed by fraud signals. Security applied only when risk justifies it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ DETECT ═══════ -->
+<section class="feature-section">
+  <div class="wrap">
+    <div class="feature-block">
+      <div class="feature-text">
+        <div class="section-label">Transaction fraud</div>
+        <h2>Catch fraud before it costs you</h2>
+        <p class="desc">Real-time transaction screening powered by ML models and a configurable rule engine. Sentinel balances fraud prevention with approval rates so you block bad actors without losing good customers.</p>
+        <ul class="feature-bullets">
+          <li><strong>Machine learning risk scoring</strong><span>Every transaction scored in real time using device signals, behavioral biometrics, graph network analysis, and issuer performance data. Models retrain continuously on Airwallex's global acquiring data.</span></li>
+          <li><strong>Configurable fraud rules with AI assistant</strong><span>Set custom rules by segment, region, or risk appetite. Write rules in natural language, backtest against historical traffic, and see the estimated impact on approval and fraud rates before going live.</span></li>
+          <li><strong>Smart 3DS orchestration</strong><span>Dynamically trigger 3D Secure based on risk level, exemption eligibility, and regional mandates. Apply security only when risk justifies it.</span></li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <!-- Mock: Risk scoring dashboard -->
+        <div class="mock-panel" style="width:100%; max-width:480px;">
+          <div class="mock-bar">
+            <div class="mock-dot mock-dot-r"></div><div class="mock-dot mock-dot-y"></div><div class="mock-dot mock-dot-g"></div>
+            <span class="mock-bar-title">risk engine / live scoring</span>
+          </div>
+          <div class="mock-body">
+            <div class="mock-row">
+              <span class="mock-label">pay_3kR8n...qW2b</span>
+              <div class="mock-score"><div class="score-bar"><div class="score-fill" style="width:8%; background:#38d34b;"></div></div><span class="mock-val" style="color:#38d34b; font-size:12px;">8</span></div>
+              <span class="mock-badge badge-green">ALLOW</span>
+            </div>
+            <div class="mock-row">
+              <span class="mock-label">pay_9mT4x...hL7c</span>
+              <div class="mock-score"><div class="score-bar"><div class="score-fill" style="width:45%; background:#ffbd2e;"></div></div><span class="mock-val" style="color:#ffbd2e; font-size:12px;">45</span></div>
+              <span class="mock-badge badge-yellow">3DS</span>
+            </div>
+            <div class="mock-row">
+              <span class="mock-label">pay_2pJ6w...rF9d</span>
+              <div class="mock-score"><div class="score-bar"><div class="score-fill" style="width:92%; background:#ff3b30;"></div></div><span class="mock-val" style="color:#ff3b30; font-size:12px;">92</span></div>
+              <span class="mock-badge badge-red">BLOCK</span>
+            </div>
+            <div class="mock-row">
+              <span class="mock-label">pay_8nK1v...tP3e</span>
+              <div class="mock-score"><div class="score-bar"><div class="score-fill" style="width:15%; background:#38d34b;"></div></div><span class="mock-val" style="color:#38d34b; font-size:12px;">15</span></div>
+              <span class="mock-badge badge-green">ALLOW</span>
+            </div>
+            <div class="mock-row">
+              <span class="mock-label">pay_5bQ7a...mX6f</span>
+              <div class="mock-score"><div class="score-bar"><div class="score-fill" style="width:6%; background:#38d34b;"></div></div><span class="mock-val" style="color:#38d34b; font-size:12px;">6</span></div>
+              <span class="mock-badge badge-green">ALLOW</span>
+            </div>
+            <div style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between;">
+              <span class="mock-subtext">Last 60s: 847 scored</span>
+              <span class="mock-subtext" style="color:#38d34b;">99.2% &lt;50ms</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ CARD TESTING ═══════ -->
+<section class="feature-section feature-section-alt">
+  <div class="wrap">
+    <div class="feature-block reverse">
+      <div class="feature-text">
+        <div class="section-label">Card testing &amp; bot abuse</div>
+        <h2>Stay ahead of attacks, not behind them</h2>
+        <p class="desc">AI agents detect coordinated attacks as they happen and respond automatically. Your team gets notified, not scrambled.</p>
+        <ul class="feature-bullets">
+          <li><strong>Fraud Attack Prevention Agent</strong><span>Detects card testing, BIN attacks, and enumeration patterns in real time with 96% precision. Live dashboard narration shows exposure contained, root cause surfaced, and attack summary delivered automatically.</span></li>
+          <li><strong>Website Scanner Agent</strong><span>Reads your storefront to distinguish legitimate product launches from attacks. Flash sales and product drops are classified and routed to event-specific risk profiles so real customers aren't blocked during peak moments.</span></li>
+          <li><strong>Rule Recommendation Agent</strong><span>Proposes merchant-specific rules covering 90%+ of the attack surface, backtested and impact-priced. One click to activate. Auto-expires when the threat passes.</span></li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <!-- Mock: Attack detection panel -->
+        <div class="mock-panel" style="width:100%; max-width:480px;">
+          <div class="mock-bar">
+            <div class="mock-dot mock-dot-r"></div><div class="mock-dot mock-dot-y"></div><div class="mock-dot mock-dot-g"></div>
+            <span class="mock-bar-title">sentinel / attack detection</span>
+          </div>
+          <div class="mock-body">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+              <span class="mock-badge badge-red" style="font-size:12px; padding:4px 10px;">&#9679; ACTIVE ATTACK</span>
+              <span style="font-size:11px; color:#868e98;">Detected 3m ago</span>
+            </div>
+            <div class="mock-heading" style="font-size:13px;">Card Testing Attack</div>
+            <div class="mock-row">
+              <span class="mock-label">Suspicious txns</span>
+              <span class="mock-val" style="color:#ff3b30;">1,070</span>
+            </div>
+            <div class="mock-row">
+              <span class="mock-label">Exposure blocked</span>
+              <span class="mock-val" style="color:#38d34b;">$8,891.00</span>
+            </div>
+            <div class="mock-row">
+              <span class="mock-label">Block rate</span>
+              <span class="mock-val" style="color:#38d34b;">99.7%</span>
+            </div>
+            <div style="margin-top:16px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.06);">
+              <div style="font-size:11px; color:#868e98; margin-bottom:8px;">AI INSIGHTS</div>
+              <div style="font-size:12px; color:#e8eaed; line-height:1.5; padding:10px; background:rgba(255,255,255,0.03); border-radius:6px; border-left:2px solid #9F81FF;">
+                Extreme BIN concentration: 94% of attempts from 4 BIN ranges. Identical $1.00 amounts. Unmatched device profiles suggest SDK bypass attempt.
+              </div>
+            </div>
+            <div style="margin-top:12px;">
+              <div style="font-size:11px; color:#868e98; margin-bottom:8px;">RECOMMENDED ACTION</div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:rgba(255,255,255,0.03); border-radius:6px;">
+                <div>
+                  <div style="font-size:12px; color:#fff;">Block device fingerprint</div>
+                  <div style="font-size:10px; color:#868e98;">Est. impact: -0.21% acceptance</div>
+                </div>
+                <span class="mock-badge badge-purple" style="cursor:pointer;">Deploy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ DISPUTES ═══════ -->
+<section class="feature-section">
+  <div class="wrap">
+    <div class="feature-block">
+      <div class="feature-text">
+        <div class="section-label">Dispute management</div>
+        <h2>Turn disputes from a cost center into recovered revenue</h2>
+        <p class="desc">AI-powered dispute management across the full lifecycle. Sentinel builds evidence, estimates win probability, and auto-submits challenges. Your team handles exceptions, not the queue.</p>
+        <ul class="feature-bullets">
+          <li><strong>AI Dispute Automation</strong><span>30%+ higher win rate versus manual handling. Evidence packs built per case and tailored to industry, reason code, and payment method. Win probability estimated with full reasoning before every submission.</span></li>
+          <li><strong>Visa CE 3.0 Auto-Challenge</strong><span>Automatically challenges Visa 10.4 fraud disputes using compelling evidence matching. Strict three-way data matching across historical transactions. Won cases excluded from VAMP monitoring, directly reducing penalty exposure.</span></li>
+          <li><strong>Dynamic Rapid Dispute Resolution</strong><span>Resolves disputes before they become chargebacks. Dynamic thresholds adjust based on risk level and dispute patterns, proactively deflecting disputes across multiple markets.</span></li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <!-- Mock: Dispute automation panel -->
+        <div class="mock-panel" style="width:100%; max-width:480px;">
+          <div class="mock-bar">
+            <div class="mock-dot mock-dot-r"></div><div class="mock-dot mock-dot-y"></div><div class="mock-dot mock-dot-g"></div>
+            <span class="mock-bar-title">sentinel / dispute automation</span>
+          </div>
+          <div class="mock-body">
+            <div class="mock-heading" style="font-size:13px;">Dispute #CB-29841</div>
+            <div class="mock-row">
+              <span class="mock-label">Type</span>
+              <span class="mock-val">Visa 10.4 &mdash; CNP Fraud</span>
+            </div>
+            <div class="mock-row">
+              <span class="mock-label">Amount</span>
+              <span class="mock-val">$189.00 USD</span>
+            </div>
+            <div class="mock-row">
+              <span class="mock-label">Win probability</span>
+              <div class="mock-score">
+                <div class="score-bar"><div class="score-fill" style="width:87%; background:#38d34b;"></div></div>
+                <span class="mock-val" style="color:#38d34b;">87%</span>
+              </div>
+            </div>
+            <div class="mock-row">
+              <span class="mock-label">AI decision</span>
+              <span class="mock-badge badge-purple">CHALLENGE</span>
+            </div>
+            <div style="margin-top:16px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.06);">
+              <div style="font-size:11px; color:#868e98; margin-bottom:8px;">CE 3.0 EVIDENCE</div>
+              <div style="font-size:12px; color:#e8eaed; line-height:1.6; padding:10px; background:rgba(255,255,255,0.03); border-radius:6px;">
+                <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.04);">
+                  <span style="color:#868e98;">Prior txn P1</span><span>pay_2nK...7a &middot; Jan 14</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.04);">
+                  <span style="color:#868e98;">Prior txn P2</span><span>pay_8mQ...3c &middot; Mar 02</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.04);">
+                  <span style="color:#868e98;">Match 1</span><span style="color:#38d34b;">IP address &#10003;</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; padding:4px 0;">
+                  <span style="color:#868e98;">Match 2</span><span style="color:#38d34b;">Device ID &#10003;</span>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:12px; display:flex; gap:4px;">
+              <span class="mock-badge badge-green" style="font-size:10px;">Evidence: 94%</span>
+              <span class="mock-badge badge-green" style="font-size:10px;">Auto-submitted</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ CONTROL ═══════ -->
+<section class="feature-section feature-section-alt">
+  <div class="wrap">
+    <div class="feature-block reverse">
+      <div class="feature-text">
+        <div class="section-label">Ongoing use &amp; control</div>
+        <h2>Your fraud strategy, your way</h2>
+        <p class="desc">Sentinel is not a black box. Full visibility into every risk decision, tools to configure your own strategy, and AI that adapts to your business goals.</p>
+        <ul class="feature-bullets">
+          <li><strong>Post-authorization review</strong><span>Hold capture after authorization and run a second-pass risk assessment with enriched signals. AI-assisted review recommends approve or cancel with reasoning. Your team makes the final call.</span></li>
+          <li><strong>Risk watchlists</strong><span>Configure allow, challenge, or block decisions by email, card fingerprint, IP address, or device ID. Governed to prevent undermining overall risk appetite or scheme compliance.</span></li>
+          <li><strong>Decision reason codes</strong><span>Every decision includes structured reason codes explaining why a transaction was allowed, challenged, or blocked. Two-level system translates complex internal logic into merchant-friendly explanations.</span></li>
+          <li><strong>Risk analytics</strong><span>Fraud and dispute rates, block and verification rates, payment success trends, and benchmarking against similar businesses. Monitor Visa and Mastercard scheme compliance in real time.</span></li>
+        </ul>
+      </div>
+      <div class="feature-visual">
+        <!-- Mock: Analytics panel -->
+        <div class="mock-panel" style="width:100%; max-width:480px;">
+          <div class="mock-bar">
+            <div class="mock-dot mock-dot-r"></div><div class="mock-dot mock-dot-y"></div><div class="mock-dot mock-dot-g"></div>
+            <span class="mock-bar-title">sentinel / risk analytics</span>
+          </div>
+          <div class="mock-body">
+            <div class="mock-heading" style="font-size:13px;">Performance Overview</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+              <div style="background:rgba(255,255,255,0.03); border-radius:8px; padding:14px;">
+                <div style="font-size:11px; color:#868e98;">Fraud rate</div>
+                <div style="font-size:22px; font-weight:700; color:#38d34b; margin-top:4px;">Low</div>
+                <div style="font-size:10px; color:#38d34b;">&#9660; Below benchmark</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.03); border-radius:8px; padding:14px;">
+                <div style="font-size:11px; color:#868e98;">Approval rate</div>
+                <div style="font-size:22px; font-weight:700; color:#fff; margin-top:4px;">High</div>
+                <div style="font-size:10px; color:#38d34b;">&#9650; Above benchmark</div>
+              </div>
+            </div>
+            <!-- Mini chart -->
+            <div style="margin-bottom:16px;">
+              <div style="font-size:11px; color:#868e98; margin-bottom:8px;">Risk engine decisions (7d)</div>
+              <div style="display:flex; align-items:flex-end; gap:3px; height:48px;">
+                <div style="flex:1; background:#38d34b; border-radius:2px 2px 0 0; height:85%;"></div>
+                <div style="flex:1; background:#38d34b; border-radius:2px 2px 0 0; height:90%;"></div>
+                <div style="flex:1; background:#38d34b; border-radius:2px 2px 0 0; height:78%;"></div>
+                <div style="flex:1; background:#38d34b; border-radius:2px 2px 0 0; height:92%;"></div>
+                <div style="flex:1; background:#38d34b; border-radius:2px 2px 0 0; height:88%;"></div>
+                <div style="flex:1; background:#38d34b; border-radius:2px 2px 0 0; height:95%;"></div>
+                <div style="flex:1; background:#38d34b; border-radius:2px 2px 0 0; height:91%;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:9px; color:#545b63; margin-top:4px;">
+                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+              </div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <div style="display:flex; align-items:center; gap:4px;"><div style="width:8px; height:8px; border-radius:2px; background:#38d34b;"></div><span style="font-size:10px; color:#868e98;">Approved</span></div>
+              <div style="display:flex; align-items:center; gap:4px;"><div style="width:8px; height:8px; border-radius:2px; background:#ffbd2e;"></div><span style="font-size:10px; color:#868e98;">3DS</span></div>
+              <div style="display:flex; align-items:center; gap:4px;"><div style="width:8px; height:8px; border-radius:2px; background:#ff3b30;"></div><span style="font-size:10px; color:#868e98;">Blocked</span></div>
+            </div>
+            <div style="margin-top:16px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.06);">
+              <div style="font-size:11px; color:#868e98; margin-bottom:8px;">SCHEME COMPLIANCE</div>
+              <div class="mock-row" style="padding:6px 0;">
+                <span style="font-size:12px;">Visa VAMP</span>
+                <span class="mock-badge badge-green">Within threshold</span>
+              </div>
+              <div class="mock-row" style="padding:6px 0; border:0;">
+                <span style="font-size:12px;">Mastercard</span>
+                <span class="mock-badge badge-green">Within threshold</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ SIGNALS ═══════ -->
+<section class="signals">
+  <div class="wrap">
+    <div class="section-label">Data foundation</div>
+    <div class="section-title">Thousands of signals per transaction</div>
+    <p class="section-body" style="max-width:640px;">The fraud engine evaluates a comprehensive risk data layer in real time. High-quality data directly improves model accuracy, reduces false declines, and helps maintain scheme compliance.</p>
+    <div class="sig-grid">
+      <div class="sig-card">
+        <h4><span class="sig-dot"></span>Device and biometrics</h4>
+        <p>Device fingerprinting, emulator and VM detection, cookie manipulation, mouse movements, typing speed, and session consistency checks.</p>
+      </div>
+      <div class="sig-card">
+        <h4><span class="sig-dot"></span>Behavioral patterns</h4>
+        <p>Velocity analysis across multiple time windows, impossible travel detection, and abnormal sequence identification using deep learning models.</p>
+      </div>
+      <div class="sig-card">
+        <h4><span class="sig-dot"></span>Network and identity</h4>
+        <p>IP geolocation, VPN and proxy detection, email validation, phone verification, location inconsistency checks, and prepaid SIM or VOIP patterns.</p>
+      </div>
+      <div class="sig-card">
+        <h4><span class="sig-dot"></span>Graph analysis</h4>
+        <p>High-risk community detection, fraud density within connected entities, cluster velocity patterns, and abnormal network composition analysis.</p>
+      </div>
+      <div class="sig-card">
+        <h4><span class="sig-dot"></span>Issuer intelligence</h4>
+        <p>Issuer-specific approval patterns, authentication preferences, bank-level response characteristics, and historical performance metrics.</p>
+      </div>
+      <div class="sig-card">
+        <h4><span class="sig-dot"></span>Payment context</h4>
+        <p>Card BIN attributes, transaction amount and currency patterns, merchant category, name and address validation, and gibberish detection.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ ARCHITECTURE ═══════ -->
+<section class="lifecycle">
+  <div class="wrap">
+    <div class="section-label section-label-light">Integrated platform</div>
+    <div class="section-title" style="color:#fff;">Four products. One connected system.</div>
+    <p class="section-body" style="color:#868e98; margin-bottom:48px; max-width:640px;">Because Airwallex controls the end-to-end payment lifecycle, these components share data and decisions. Attack detection informs rules. Fraud scores feed routing. Dispute results loop back to improve detection.</p>
+    <div class="lc-grid" style="grid-template-columns:repeat(2,1fr);">
+      <div>
+        <div class="lc-item" style="border-left:2px solid #9F81FF;">
+          <h4>Payment Fraud Engine</h4>
+          <p>Screens and scores every transaction in real time. Returns allow, challenge, or block decisions during payment processing.</p>
+        </div>
+        <div class="lc-item" style="border-left:2px solid #FF8E3C;">
+          <h4>Optimize 360</h4>
+          <p>Payment conversion optimization that works with fraud decisions to choose the best path, decide when to retry, and determine when to apply additional security.</p>
+        </div>
+      </div>
+      <div>
+        <div class="lc-item" style="border-left:2px solid #612FFF;">
+          <h4>Airwallex Sentinel</h4>
+          <p>Real-time fraud attack detection that identifies coordinated attacks and abnormal patterns, then automatically deploys targeted response strategies.</p>
+        </div>
+        <div class="lc-item" style="border-left:2px solid #38d34b;">
+          <h4>AI Dispute Automation</h4>
+          <p>Recommends whether to accept or challenge disputes, generates evidence packages, and automates submissions to card schemes.</p>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:48px; text-align:center;">
+      <div style="display:inline-flex; gap:32px; flex-wrap:wrap; justify-content:center;">
+        <div style="text-align:center;">
+          <div style="font-size:11px; color:#868e98; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:4px;">Fraud scores</div>
+          <div style="font-size:11px; color:#545b63;">&#8594; Routing &amp; authentication</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:11px; color:#868e98; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:4px;">Attack detection</div>
+          <div style="font-size:11px; color:#545b63;">&#8594; Real-time rules &amp; models</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:11px; color:#868e98; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:4px;">Dispute outcomes</div>
+          <div style="font-size:11px; color:#545b63;">&#8594; Improved detection accuracy</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ PRODUCT SUITE ═══════ -->
+<section style="padding:80px 0; background:#f6f7f8; border-top:1px solid #e8eaed;">
+  <div class="wrap">
+    <div class="section-label">Product suite</div>
+    <div class="section-title">One system. Full lifecycle coverage.</div>
+    <p class="section-body" style="margin-bottom:48px;">Every stage of fraud defense, from authorization through dispute resolution.</p>
+    <div class="lc-grid" style="background:transparent;">
+      <div style="background:#fff; border-radius:16px; padding:28px;">
+        <div style="font-size:14px; font-weight:700; letter-spacing:0.4px; text-transform:uppercase; color:#9F81FF; margin-bottom:16px; padding-bottom:12px; border-bottom:2px solid #9F81FF;">Pre-authorization</div>
+        <div style="padding:12px 0; border-bottom:1px solid #e8eaed;">
+          <div style="font-size:14px; font-weight:700; color:#1a1d21;">Fraud Prevention</div>
+          <div style="font-size:13px; color:#68707a; margin-top:2px;">ML models, configurable rules, Smart 3DS, device fingerprinting</div>
+        </div>
+        <div style="padding:12px 0;">
+          <div style="font-size:14px; font-weight:700; color:#1a1d21;">Fraud Attack Prevention</div>
+          <div style="font-size:13px; color:#68707a; margin-top:2px;">Real-time AI detection of card testing, BIN attacks, enumeration, and bot abuse</div>
+        </div>
+      </div>
+      <div style="background:#fff; border-radius:16px; padding:28px;">
+        <div style="font-size:14px; font-weight:700; letter-spacing:0.4px; text-transform:uppercase; color:#FF8E3C; margin-bottom:16px; padding-bottom:12px; border-bottom:2px solid #FF8E3C;">Post-authorization</div>
+        <div style="padding:12px 0; border-bottom:1px solid #e8eaed;">
+          <div style="font-size:14px; font-weight:700; color:#1a1d21;">Post-Auth Review</div>
+          <div style="font-size:13px; color:#68707a; margin-top:2px;">Delayed capture with AI-assisted second-pass risk assessment</div>
+        </div>
+        <div style="padding:12px 0;">
+          <div style="font-size:14px; font-weight:700; color:#1a1d21;">Manual / AI Review</div>
+          <div style="font-size:13px; color:#68707a; margin-top:2px;">Human-in-the-loop for complex cases where automation isn't enough</div>
+        </div>
+      </div>
+      <div style="background:#fff; border-radius:16px; padding:28px;">
+        <div style="font-size:14px; font-weight:700; letter-spacing:0.4px; text-transform:uppercase; color:#38d34b; margin-bottom:16px; padding-bottom:12px; border-bottom:2px solid #38d34b;">Dispute</div>
+        <div style="padding:12px 0; border-bottom:1px solid #e8eaed;">
+          <div style="font-size:14px; font-weight:700; color:#1a1d21;">AI Dispute Automation</div>
+          <div style="font-size:13px; color:#68707a; margin-top:2px;">Automated evidence, win rate prediction, AI challenge decisions</div>
+        </div>
+        <div style="padding:12px 0; border-bottom:1px solid #e8eaed;">
+          <div style="font-size:14px; font-weight:700; color:#1a1d21;">Dynamic RDR</div>
+          <div style="font-size:13px; color:#68707a; margin-top:2px;">Pre-chargeback resolution before disputes escalate</div>
+        </div>
+        <div style="padding:12px 0;">
+          <div style="font-size:14px; font-weight:700; color:#1a1d21;">Chargeback Protection</div>
+          <div style="font-size:13px; color:#68707a; margin-top:2px;">Guaranteed chargeback liability coverage powered by AI</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ TESTIMONIALS ═══════ -->
+<section class="testimonials" style="border-top:0;">
+  <div class="wrap">
+    <div class="section-label">Customer stories</div>
+    <div class="section-title">Trusted by businesses worldwide</div>
+    <div class="test-grid">
+      <div class="test-card">
+        <blockquote>"We went from losing nearly every dispute to winning the vast majority. The AI builds stronger evidence than our team ever could manually."</blockquote>
+        <div class="test-attr">
+          <div class="test-avatar">G</div>
+          <div><div class="test-name">[Gaming client]</div><div class="test-role">Global Digital Entertainment</div></div>
+        </div>
+      </div>
+      <div class="test-card">
+        <blockquote>"During a product launch, our old fraud rules would have blocked thousands of legitimate orders. Sentinel recognized it as a sales event and adjusted automatically."</blockquote>
+        <div class="test-attr">
+          <div class="test-avatar">R</div>
+          <div><div class="test-name">[Retail client]</div><div class="test-role">Online Retail</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ COMPARISON ═══════ -->
+<section class="comparison">
+  <div class="wrap">
+    <div class="section-label">How Sentinel compares</div>
+    <div class="section-title">Built different from legacy fraud tools</div>
+    <table class="comp-table">
+      <thead>
+        <tr><th>Capability</th><th class="col-s">Sentinel</th><th class="col-l">Legacy tools</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Full lifecycle coverage (pre-auth through dispute)</td><td><span class="comp-check">&#10003;</span></td><td>Pre-auth only</td></tr>
+        <tr><td>AI dispute automation with 30%+ win rate uplift</td><td><span class="comp-check">&#10003;</span></td><td>Manual or basic</td></tr>
+        <tr><td>Real-time fraud attack detection and auto-response</td><td>96% precision</td><td>Post-incident alerting</td></tr>
+        <tr><td>AI agents that recommend and price rules</td><td><span class="comp-check">&#10003;</span></td><td>Static rule libraries</td></tr>
+        <tr><td>Card testing and bot abuse prevention</td><td>Auto-detect &amp; block</td><td>Manual investigation</td></tr>
+        <tr><td>Website scanning for event-aware risk adjustment</td><td><span class="comp-check">&#10003;</span></td><td>Not available</td></tr>
+        <tr><td>Post-auth delayed capture with AI review</td><td><span class="comp-check">&#10003;</span></td><td>Limited</td></tr>
+        <tr><td>Visa CE 3.0 auto-challenge</td><td><span class="comp-check">&#10003;</span></td><td>Manual evidence</td></tr>
+        <tr><td>Fraud scores integrated with payment routing</td><td>Native</td><td>Separate systems</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════ RESOURCES ═══════ -->
+<section class="resources">
+  <div class="wrap">
+    <div class="section-label">Resources</div>
+    <div class="section-title">Learn more</div>
+    <div class="res-grid">
+      <a href="#" class="res-card">
+        <div class="res-thumb"><svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect x="12" y="8" width="24" height="32" rx="2" stroke="#868e98" stroke-width="1.5" fill="none"/><path d="M18 18h12M18 24h8" stroke="#868e98" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="res-body"><div class="res-type">Solution brief</div><h3>Airwallex Sentinel: AI-native fraud prevention for global payments</h3></div>
+      </a>
+      <a href="#" class="res-card">
+        <div class="res-thumb"><svg width="48" height="48" viewBox="0 0 48 48" fill="none"><path d="M12 36l8-8 6 6 8-16 6 8" stroke="#868e98" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
+        <div class="res-body"><div class="res-type">Case study</div><h3>How a leading gaming platform achieved 30%+ higher dispute win rates</h3></div>
+      </a>
+      <a href="#" class="res-card">
+        <div class="res-thumb"><svg width="48" height="48" viewBox="0 0 48 48" fill="none"><path d="M14 38V10a2 2 0 012-2h10l8 8v22a2 2 0 01-2 2H16a2 2 0 01-2-2z" stroke="#868e98" stroke-width="1.5" fill="none"/><path d="M24 8v8h8" stroke="#868e98" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="res-body"><div class="res-type">Developer guide</div><h3>Integrating fraud signals for enhanced protection: data standards and best practices</h3></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FINAL CTA ═══════ -->
+<section class="final-cta">
+  <div class="wrap">
+    <h2>Every payment is worth protecting.<br>Start with Sentinel.</h2>
+    <p class="desc">Join the businesses using AI-powered fraud prevention to protect revenue and scale globally.</p>
+    <div class="cta-btns">
+      <a href="#" class="btn btn-primary btn-lg">Get started</a>
+      <a href="#" class="btn btn-ghost-white btn-lg">Contact sales</a>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">&copy; Airwallex 2026. All rights reserved. &middot; Draft for internal PMM review.</div></footer>
+
+</body>
+</html>
