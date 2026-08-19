@@ -321,20 +321,24 @@
 <section class="matrix">
   <div class="wrap">
     <div class="matrix-grid">
-      <!-- Sign-up / Pre-auth -->
+      <!-- Checkout / Payment -->
       <div class="matrix-col">
-        <div class="matrix-col-label" style="color:#9F81FF; border-color:#9F81FF;">Sign-up &amp; payment</div>
+        <div class="matrix-col-label" style="color:#9F81FF; border-color:#9F81FF;">Checkout &amp; payment</div>
         <div class="matrix-item">
           <div class="matrix-icon" style="background:rgba(97,47,255,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="#612FFF" stroke-width="1.5"/><path d="M6 9h6M9 6v6" stroke="#612FFF" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-          <div><h4>Card testing</h4><p>Automated validation of stolen cards through high-volume small transactions</p></div>
+          <div><h4>Card testing</h4><p>Automated validation of stolen cards through high-volume small transactions at checkout</p></div>
         </div>
         <div class="matrix-item">
           <div class="matrix-icon" style="background:rgba(97,47,255,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2l-7 3.5v4.5c0 3.87 2.99 7.13 7 7.88 4.01-.75 7-4.01 7-7.88V5.5L9 2z" stroke="#612FFF" stroke-width="1.5" fill="none"/></svg></div>
-          <div><h4>Transaction fraud</h4><p>Stolen credentials used for unauthorized purchases at checkout</p></div>
+          <div><h4>Transaction fraud</h4><p>Stolen credentials used for unauthorized purchases at authorization</p></div>
         </div>
         <div class="matrix-item">
           <div class="matrix-icon" style="background:rgba(97,47,255,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#612FFF" stroke-width="1.5" fill="none"/><circle cx="9" cy="7" r="2" stroke="#612FFF" stroke-width="1.5" fill="none"/><path d="M5 14c0-2.21 1.79-4 4-4s4 1.79 4 4" stroke="#612FFF" stroke-width="1.5" fill="none"/></svg></div>
-          <div><h4>Bot abuse</h4><p>Automated scripts exploiting promotions, inventory, and payment flows</p></div>
+          <div><h4>Account takeover</h4><p>Compromised credentials used to hijack accounts and make unauthorized purchases</p></div>
+        </div>
+        <div class="matrix-item">
+          <div class="matrix-icon" style="background:rgba(97,47,255,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#612FFF" stroke-width="1.5" fill="none"/><path d="M9 6v4l2.5 1.5" stroke="#612FFF" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div><h4>Bot abuse</h4><p>Automated scripts exploiting promotions, inventory, and payment flows during flash sales</p></div>
         </div>
       </div>
 
@@ -342,16 +346,16 @@
       <div class="matrix-col">
         <div class="matrix-col-label" style="color:#FF8E3C; border-color:#FF8E3C;">Post-purchase</div>
         <div class="matrix-item">
+          <div class="matrix-icon" style="background:rgba(255,142,60,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 13l4-4 3 3 5-7" stroke="#FF8E3C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
+          <div><h4>Delayed capture fraud</h4><p>Authorization passes but fraud signals emerge before settlement</p></div>
+        </div>
+        <div class="matrix-item">
           <div class="matrix-icon" style="background:rgba(255,142,60,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 6h14v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" stroke="#FF8E3C" stroke-width="1.5" fill="none"/><path d="M2 6l7 5 7-5" stroke="#FF8E3C" stroke-width="1.5" fill="none"/></svg></div>
           <div><h4>Friendly fraud</h4><p>Legitimate purchases disputed as unauthorized after delivery</p></div>
         </div>
         <div class="matrix-item">
           <div class="matrix-icon" style="background:rgba(255,142,60,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v14M2 9h14" stroke="#FF8E3C" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="9" r="7" stroke="#FF8E3C" stroke-width="1.5" fill="none"/></svg></div>
-          <div><h4>Account takeover</h4><p>Compromised credentials used to make purchases on existing accounts</p></div>
-        </div>
-        <div class="matrix-item">
-          <div class="matrix-icon" style="background:rgba(255,142,60,0.08);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 13l4-4 3 3 5-7" stroke="#FF8E3C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
-          <div><h4>Delayed capture fraud</h4><p>Authorization passes but fraud signals emerge before settlement</p></div>
+          <div><h4>Refund abuse</h4><p>Exploiting return policies through false claims or serial refund patterns</p></div>
         </div>
       </div>
 
